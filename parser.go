@@ -194,3 +194,34 @@ func (this *JsonFieldGetter) GetFloat64(key string) (*float64, error, Response) 
 		}
 	}
 }
+
+func (this *JsonFieldGetter) GetBool(key string) (*bool, error, Response) {
+	fieldSchema, ok := this.fsmap[key]
+	if !ok {
+		panic(fmt.Sprintf("Can not find key=%s in JsonSchema", key))
+		//return nil, errors.New(fmt.Sprintf("Can not find key=%s in JsonSchema", key)), NewMissFieldInSchemaResponse(key)
+	}
+	valJson, ok := this.j.CheckGet(key)
+	if !ok {
+		if fieldSchema.Required {
+			return nil,
+				errors.New(fmt.Sprintf("Need field: '%s' (type: '%s')!", key, fieldSchema.TypeOfVal)),
+				NewNeedArgErrorResponse(key, fieldSchema.TypeOfVal)
+		} else {
+			if reflect.TypeOf(fieldSchema.DefaultVal).Kind() != fieldSchema.TypeOfVal {
+				panic(fmt.Sprintf("Mismatch type of DefaultVal and TypeOfVal!"))
+			}
+			val := fieldSchema.DefaultVal.(bool)
+			return &val,
+				nil,
+				NewSuccessResponse()
+		}
+	} else {
+		val, err := valJson.Bool()
+		if err != nil {
+			return nil, err, NewArgTypeErrorResponse(key, fieldSchema.TypeOfVal.String())
+		} else {
+			return &val, nil, NewSuccessResponse()
+		}
+	}
+}
