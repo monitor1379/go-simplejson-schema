@@ -202,5 +202,4 @@ func TestJsonFieldGetter_GetBool2(t *testing.T) {
 	if resp == nil || resp["code"] != NeedArgErrorResponseCode {
 		t.Errorf("Actually: [%v],  Expected: [%v]", resp, NewNeedArgErrorResponse("isMale", reflect.Bool))
 	}
-	t.Errorf("Test Error for Travis-CI\n")
 }
