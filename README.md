@@ -2,7 +2,7 @@
 
 a Go package to interact with go-simplejson EASIER!
 
-[![Build Status](https://secure.travis-ci.org/bitly/go-simplejson.png)](http://travis-ci.org/bitly/go-simplejson)
+[![Build Status](https://travis-ci.com/monitor1379/go-simplejson-schema.svg?branch=master)](https://travis-ci.com/monitor1379/go-simplejson-schema)
 
 ### Importing
 
