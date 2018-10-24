@@ -7,7 +7,7 @@ import (
 	"errors"
 )
 
-func TestJsonGetter_Get1(t *testing.T) {
+func TestJsonFieldGetter_Get1(t *testing.T) {
 	jsonStr := "{\"name\":\"dengzhenpeng\"}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "name", TypeOfVal: reflect.String, Required: true}}
@@ -25,7 +25,7 @@ func TestJsonGetter_Get1(t *testing.T) {
 
 }
 
-func TestJsonGetter_Get2(t *testing.T) {
+func TestJsonFieldGetter_Get2(t *testing.T) {
 	jsonStr := "{\"age\": 23}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "age", TypeOfVal: reflect.Int, Required: true}}
@@ -43,7 +43,7 @@ func TestJsonGetter_Get2(t *testing.T) {
 
 }
 
-func TestJsonGetter_Get3(t *testing.T) {
+func TestJsonFieldGetter_Get3(t *testing.T) {
 	jsonStr := "{\"name\":\"dengzhenpeng\"}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "age", TypeOfVal: reflect.Int, Required: false, DefaultVal: 23}}
@@ -61,7 +61,7 @@ func TestJsonGetter_Get3(t *testing.T) {
 
 }
 
-func TestJsonGetter_Get4(t *testing.T) {
+func TestJsonFieldGetter_Get4(t *testing.T) {
 	jsonStr := "{}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "name", TypeOfVal: reflect.String, Required: false, DefaultVal: "dengzhenpeng"}}
@@ -79,7 +79,7 @@ func TestJsonGetter_Get4(t *testing.T) {
 
 }
 
-func TestJsonGetter_Get5(t *testing.T) {
+func TestJsonFieldGetter_Get5(t *testing.T) {
 	jsonStr := "{\"age\":\"23\"}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "age", TypeOfVal: reflect.Int, Required: true, DefaultVal: 23}}
@@ -97,7 +97,7 @@ func TestJsonGetter_Get5(t *testing.T) {
 
 }
 
-func TestJsonGetter_GetString1(t *testing.T) {
+func TestJsonFieldGetter_GetString1(t *testing.T) {
 	jsonStr := "{\"name\":\"dengzhenpeng\"}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "name", TypeOfVal: reflect.String, Required: true}}
@@ -115,7 +115,7 @@ func TestJsonGetter_GetString1(t *testing.T) {
 
 }
 
-func TestJsonGetter_GetString2(t *testing.T) {
+func TestJsonFieldGetter_GetString2(t *testing.T) {
 	jsonStr := "{}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "name", TypeOfVal: reflect.String, Required: false, DefaultVal: "dengzhenpeng"}}
@@ -133,7 +133,7 @@ func TestJsonGetter_GetString2(t *testing.T) {
 
 }
 
-func TestJsonGetter_GetInt1(t *testing.T) {
+func TestJsonFieldGetter_GetInt1(t *testing.T) {
 	jsonStr := "{\"age\":23}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "age", TypeOfVal: reflect.Int, Required: true}}
@@ -151,7 +151,7 @@ func TestJsonGetter_GetInt1(t *testing.T) {
 
 }
 
-func TestJsonGetter_GetInt2(t *testing.T) {
+func TestJsonFieldGetter_GetInt2(t *testing.T) {
 	jsonStr := "{}"
 	sjson, _ := simplejson.NewJson([]byte(jsonStr))
 	var personJsonSchema = JsonSchema{{Key: "age", TypeOfVal: reflect.Int, Required: false, DefaultVal: 23}}
@@ -167,4 +167,40 @@ func TestJsonGetter_GetInt2(t *testing.T) {
 		t.Errorf("Actually: [%v],  Expected: [%v]", resp, NewSuccessResponse())
 	}
 
+}
+
+func TestJsonFieldGetter_GetBool1(t *testing.T) {
+	jsonStr := "{\"isMale\":true}"
+	sjson, _ := simplejson.NewJson([]byte(jsonStr))
+	var personJsonSchema = JsonSchema{{Key: "isMale", TypeOfVal: reflect.Bool, Required: true}}
+	jsonGetter := NewJsonFieldGetter(sjson, &personJsonSchema)
+	val, err, resp := jsonGetter.GetBool("isMale")
+	if *val != true {
+		t.Errorf("Actually: [%v],  Expected: [%v]", val, nil)
+	}
+	if err != nil {
+		t.Errorf("Actually: [%s],  Expected: [%v]", err, nil)
+	}
+	if resp == nil || resp["code"] != SuccessResponseCode {
+		t.Errorf("Actually: [%v],  Expected: [%v]", resp, NewSuccessResponse())
+	}
+
+}
+
+func TestJsonFieldGetter_GetBool2(t *testing.T) {
+	jsonStr := "{}"
+	sjson, _ := simplejson.NewJson([]byte(jsonStr))
+	var personJsonSchema = JsonSchema{{Key: "isMale", TypeOfVal: reflect.Bool, Required: true}}
+	jsonGetter := NewJsonFieldGetter(sjson, &personJsonSchema)
+	val, err, resp := jsonGetter.GetBool("isMale")
+	if err == nil {
+		t.Errorf("Actually: [%s],  Expected: [%v]", err, nil)
+	}
+	if val != nil {
+		t.Errorf("Actually: [%v],  Expected: [%v]", val, nil)
+	}
+	if resp == nil || resp["code"] != NeedArgErrorResponseCode {
+		t.Errorf("Actually: [%v],  Expected: [%v]", resp, NewNeedArgErrorResponse("isMale", reflect.Bool))
+	}
+	t.Errorf("Test Error for Travis-CI\n")
 }
